@@ -173,80 +173,32 @@ public class BarraFerramentas {
                         resultado += "constante_string " + t.getLexeme() + ", linha " + linha;
                     break;
                     case 7:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 8:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 9:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 10:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 11:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 12:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 13:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 14:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 15:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 16:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 17:
                         resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
                     break;
                     case 18:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 19:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 20:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 21:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 22:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 23:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 24:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 25:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 26:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 27:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 28:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 29:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 30:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 31:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
-                        break;
                     case 32:
                         resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
                         break;
@@ -259,14 +211,13 @@ public class BarraFerramentas {
         } catch (LexicalError e) { // tratamento de erros
             int indice = editor.getText().indexOf(e.getLexema());
             int linha = editor.getLineOfOffset(indice) + 1;
-            resultado = "Erro na linha " + linha + " - " + e.getMessage();
+            resultado = "Erro na linha " + linha + " - " + e.getLexema() + " " + e.getMessage();
 
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
         return resultado;
     }
-
 
     public static String equipe() {
         return "Equipe 01:\n"
