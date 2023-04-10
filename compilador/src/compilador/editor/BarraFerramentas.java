@@ -158,19 +158,19 @@ public class BarraFerramentas {
 
                 switch (t.getId()) {
                     case 2:
-                        resultado += "identificador " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " identificador " + t.getLexeme();
                     break;
                     case 3:
-                        resultado += "constante_int " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " constante_int " + t.getLexeme();
                     break;
                     case 4:
-                        resultado += "constante_float " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " constante_float " + t.getLexeme();
                     break;
                     case 5:
-                        resultado += "constante_binaria " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " constante_binaria " + t.getLexeme();
                     break;
                     case 6:
-                        resultado += "constante_string " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " constante_string " + t.getLexeme();
                     break;
                     case 7:
                     case 8:
@@ -184,7 +184,7 @@ public class BarraFerramentas {
                     case 16:
                     case 17:
                     case 18:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " palavra reservada " + t.getLexeme();
                         break;
                     case 19:
                     case 20:
@@ -201,7 +201,7 @@ public class BarraFerramentas {
                     case 31:
                     case 32:
                     case 33:
-                        resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
+                        resultado += linha + " simbolo especial " + t.getLexeme();
                         break;
                 }
 
