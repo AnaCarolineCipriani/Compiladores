@@ -183,9 +183,9 @@ public class BarraFerramentas {
                     case 15:
                     case 16:
                     case 17:
-                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
-                    break;
                     case 18:
+                        resultado += "palavra reservada " + t.getLexeme() + ", linha " + linha;
+                        break;
                     case 19:
                     case 20:
                     case 21:
@@ -200,6 +200,7 @@ public class BarraFerramentas {
                     case 30:
                     case 31:
                     case 32:
+                    case 33:
                         resultado += "simbolo especial " + t.getLexeme() + ", linha " + linha;
                         break;
                 }
