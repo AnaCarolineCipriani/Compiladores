@@ -201,6 +201,7 @@ public class BarraFerramentas {
                     case 31:
                     case 32:
                     case 33:
+                    case 34:
                         resultado += linha + " simbolo especial " + t.getLexeme();
                         break;
                 }
