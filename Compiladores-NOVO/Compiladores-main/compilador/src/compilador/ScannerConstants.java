@@ -1,4 +1,4 @@
-package compilador;
+package compilador.src.compilador;
 public interface ScannerConstants
 {
     int[] SCANNER_TABLE_INDEXES = 

@@ -1,4 +1,4 @@
-package compilador;
+package compilador.src.compilador;
 
 public interface Constants extends ScannerConstants, ParserConstants
 {

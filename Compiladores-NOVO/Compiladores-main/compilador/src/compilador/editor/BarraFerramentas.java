@@ -1,4 +1,6 @@
-package compilador.editor;
+package compilador.src.compilador.editor;
+
+import compilador.src.compilador.*;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -20,14 +22,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
-
-import compilador.LexicalError;
-import compilador.Lexico;
-import compilador.SemanticError;
-import compilador.Semantico;
-import compilador.Sintatico;
-import compilador.SyntaticError;
-import compilador.Token;
 
 public class BarraFerramentas {
     JFileChooser fc;
@@ -151,52 +145,48 @@ public class BarraFerramentas {
     }
 
     public static String compilar(JTextArea editor) throws BadLocationException {
-    	String resultado = "";
+
+        String resultado = "";
     	
     	Lexico lexico = new Lexico();
+        Token t = null;
 		Sintatico sintatico = new Sintatico();
 		Semantico semantico = new Semantico();
 		//...
 		lexico.setInput( editor.getText() );
 		//...
-		try
-		{
-			sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
-		}
-		// mensagem: programa compilado com sucesso - área reservada para mensagens
-		
-		catch ( LexicalError e )
-		{
-			int indice = editor.getText().indexOf(e.getLexema());
+
+        try {
+            sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
+        }
+        catch (LexicalError e) {
+            int indice = editor.getText().indexOf(e.getLexema());
             int linha = editor.getLineOfOffset(indice) + 1;
-            resultado = "Erro na linha " + linha + " - " + e.getLexema() + " " + e.getMessage();
-		}
-		catch ( SyntaticError e )
+            return "Erro na linha " + linha + " - " + e.getLexema() + " " + e.getMessage();
+        }
+        catch (SyntaticError e)
 		{
 			int linha = editor.getLineOfOffset(e.getPosition()) + 1;
 			
-		     resultado = (linha + " símbolo encontrado: na entrada " + e.getMessage()); 
+            return "Erro na linha " + linha + " - " + e.getMessage(); //+ " - " + "encontrado: " + e.getLexema());
 			 
 			//Trata erros sintáticos
 			//linha 				sugestão: converter getPosition em linha
 			//símbolo encontrado    sugestão: implementar um método getToken no sintatico
-			//mensagem - símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR	
-		     
-		     
-		    
+			//mensagem - símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
 		}
-		catch ( SemanticError e )
-		{
-			//Trata erros semânticos
-		}
+        catch (SemanticError e) {
+            //TODO
+        }
 
-        return resultado;
+        return "Programa compilado com sucesso.";
+
     }
 
     public static String equipe() {
         return "Equipe 01:\n"
                 + "Ana Caroline Cipriani dos Santos;\n"
                 + "Guilherme Soares;\n"
-                + "Joao Marcelo Schneider da Silva e Souza.";
+                + "João Marcelo Schneider da Silva e Souza.";
     }
 }

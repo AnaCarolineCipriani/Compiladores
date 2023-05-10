@@ -1,4 +1,4 @@
-package compilador;
+package compilador.src.compilador;
 public class Lexico implements Constants
 {
     private int position;

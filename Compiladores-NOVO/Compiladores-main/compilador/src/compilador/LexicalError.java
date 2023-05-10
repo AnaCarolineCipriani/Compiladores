@@ -1,4 +1,4 @@
-package compilador;
+package compilador.src.compilador;
 public class LexicalError extends AnalysisError
 {
 	private String lexema;

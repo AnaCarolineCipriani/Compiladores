@@ -1,4 +1,4 @@
-package compilador.editor;
+package compilador.src.compilador.editor;
 
 import java.awt.Color;
 import java.awt.Component;
