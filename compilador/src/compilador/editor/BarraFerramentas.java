@@ -23,7 +23,10 @@ import javax.swing.text.BadLocationException;
 
 import compilador.LexicalError;
 import compilador.Lexico;
-import compilador.Token;
+import compilador.SemanticError;
+import compilador.Semantico;
+import compilador.Sintatico;
+import compilador.SyntaticError;
 
 public class BarraFerramentas {
     JFileChooser fc;
@@ -147,23 +150,35 @@ public class BarraFerramentas {
     }
 
     public static String compilar(JTextArea editor) throws BadLocationException {
-        Lexico lexico = new Lexico();
-        lexico.setInput(editor.getText());
-        String resultado = "";
-        Token t = null;
+    	Lexico lexico = new Lexico();
+		Sintatico sintatico = new Sintatico();
+		Semantico semantico = new Semantico();
+		lexico.setInput(editor.getText());
+
         try {
-            while ((t = lexico.nextToken()) != null) {
-                // Não faz nada?
-            }
-            resultado += "Programa compilado com sucesso.";
-        } catch (LexicalError e) { // tratamento de erros
+            sintatico.parse(lexico, semantico);    // tradu��o dirigida pela sintaxe
+        }
+        catch (LexicalError e) {
             int indice = editor.getText().indexOf(e.getLexema());
             int linha = editor.getLineOfOffset(indice) + 1;
-            resultado = "Erro na linha " + linha + " - " + e.getLexema() + " " + e.getMessage();
-
+            return "Erro na linha " + linha + " - " + e.getLexema() + " " + e.getMessage();
+        }
+        catch (SyntaticError e)
+		{
+			int linha = editor.getLineOfOffset(e.getPosition()) + 1;
+			
+            return "Erro na linha " + linha + " - encontrado " + e.getLexema() + " " + e.getMessage();
+			 
+			//Trata erros sintáticos
+			//linha 				sugestão: converter getPosition em linha
+			//s�mbolo encontrado    sugest�o: implementar um m�todo getToken no sintatico
+			//mensagem - s�mbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
+		}
+        catch (SemanticError e) {
+            //TODO
         }
 
-        return resultado;
+        return "Programa compilado com sucesso.";
     }
 
     public static String equipe() {
