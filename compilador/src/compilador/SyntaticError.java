@@ -1,4 +1,7 @@
 package compilador;
+
+import java.util.Objects;
+
 public class SyntaticError extends AnalysisError
 {
 	private String lexema;
@@ -15,6 +18,6 @@ public class SyntaticError extends AnalysisError
     }
     
     public String getLexema() {
-		return lexema;
+		return Objects.equals(lexema, "$")? "EOF" : lexema;
 	}
 }
