@@ -7,7 +7,7 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = String
+Input = Stream
 Parser = LL
 #RegularDefinitions
 dig: [0-9]
@@ -76,7 +76,6 @@ pr_if = identificador: "if"
 <atribuicao1>
 <entrada_dados>
 <saida_dados>
-<saida_dados1>
 <selecao>
 <selecao1>
 <repeticao>
