@@ -91,8 +91,11 @@ pr_if = identificador: "if"
 <termo>
 <termo_>
 <fator>
+<programa>
 
 #Grammar
+<programa> ::= #15 <lista_comandos> #16;
+
 <atribuicao> ::= <lista_id> "=" <expressao> <atribuicao1>;
 
 <atribuicao1> ::= ":" pr_if <expressao> | î;
@@ -101,10 +104,10 @@ pr_if = identificador: "if"
 <entrada_dados> ::= pr_read "(" <lista_id> ")";
 
 
-<saida_dados> ::= pr_write "(" <lista_expressao> ")" | pr_writeln "(" <lista_expressao> ")" ;
+<saida_dados> ::= pr_write "(" <lista_expressao> ")" | pr_writeln "(" <lista_expressao> ")" #17 ;
 
 
-<lista_expressao> ::= <expressao> <lista_expressao1>;
+<lista_expressao> ::= <expressao> #14 <lista_expressao1>;
 
 <lista_expressao1> ::= ","<lista_expressao> | î;
 
@@ -132,25 +135,25 @@ pr_if = identificador: "if"
 <lista_id1> ::= ","<lista_id> | î;
 
 <expressao>			::= <elemento> <expressao_>  ;
-<expressao_>			::= î | pr_and <elemento> <expressao_> | pr_or <elemento> <expressao_> ;
-<elemento>			::= <relacional> | pr_true | pr_false | pr_not <elemento> ;
+<expressao_>			::= î | pr_and <elemento> #18 <expressao_> | pr_or <elemento>#19 <expressao_> ;
+<elemento>			::= <relacional> | pr_true #11 | pr_false #12 | pr_not <elemento> #13;
 
 <relacional>			::= <aritmetica> <relacional_> ;
-<relacional_>			::= î | <operador_relacional> <aritmetica> ;
+<relacional_>			::= î | <operador_relacional> #9 <aritmetica> #10;
 <operador_relacional>	::= "==" | "!=" | "<" | "<=" | ">" | ">=" ;
 
 <aritmetica>			::= <termo> <aritmetica_>  ;
-<aritmetica_>			::= î | "+" <termo> <aritmetica_> | "-" <termo> <aritmetica_> ;
+<aritmetica_>			::= î | "+" <termo> #1 <aritmetica_> | "-" <termo> #2 <aritmetica_> ;
 
 <termo>			::= <fator> <termo_> ;
-<termo_>			::= î | "*" <fator> <termo_> | "/" <fator> <termo_> ;
+<termo_>			::= î | "*" <fator> #3 <termo_> | "/" <fator> #4 <termo_> ;
 
 <fator>			::= identificador | 
-			    	    constante_int | 
-		   	    	    constante_float | 
+			    	    constante_int #5 | 
+		   	    	    constante_float #6 | 
 			    	    constante_binaria |
-			    	    constante_string | 
+			    	    constante_string #20| 
 		   	    	    "(" <expressao> ")" |
 	    	  	    	    "+" <fator> | 
-	    		    	    "-" <fator> ;
+	    		    	    "-" <fator> #8 ;
 
