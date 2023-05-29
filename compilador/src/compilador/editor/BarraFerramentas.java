@@ -161,7 +161,13 @@ public class BarraFerramentas {
         catch (LexicalError e) {
             int indice = editor.getText().indexOf(e.getLexema());
             int linha = editor.getLineOfOffset(indice) + 1;
-            return "Erro na linha " + linha + " - " + e.getLexema() + " " + e.getMessage();
+            String message = e.getMessage();
+            
+            if (message.contains("constante_string")
+            		|| message.contains("comentário de bloco")) {
+            	return "Erro na linha " + linha + " " + message;
+            }
+			return "Erro na linha " + linha + " - " + e.getLexema() + " " + message;
         }
         catch (SyntaticError e)
 		{
