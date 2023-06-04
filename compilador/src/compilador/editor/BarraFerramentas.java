@@ -13,6 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -149,7 +153,7 @@ public class BarraFerramentas {
         }
     }
 
-    public static String compilar(JTextArea editor) throws BadLocationException {
+    public static String compilar(JTextArea editor) throws BadLocationException, IOException {
     	Lexico lexico = new Lexico();
 		Sintatico sintatico = new Sintatico();
 		Semantico semantico = new Semantico();
@@ -183,9 +187,24 @@ public class BarraFerramentas {
         catch (SemanticError e) {
             //TODO
         }
+        salvaCodigoGerado(semantico);
 
         return "Programa compilado com sucesso.";
     }
+
+	private static void salvaCodigoGerado(Semantico semantico) throws IOException {
+		if (caminho == null) {
+			return;
+		}
+		Path caminhoArq = Paths.get(caminho);
+        String nomeArq = caminhoArq.getFileName().toString();
+        String caminhoAtual = caminhoArq.toFile().getParent();
+        
+        String ondeSalvar = caminhoAtual + "\\" + nomeArq + ".il";
+        File file = new File(ondeSalvar);
+        file.createNewFile();
+        Files.write(Paths.get(ondeSalvar), semantico.getCodigo().getBytes(), StandardOpenOption.APPEND);
+	}
 
     public static String equipe() {
         return "Equipe 01:\n"

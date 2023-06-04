@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 
 public class Apresentacao {
 
@@ -202,7 +203,7 @@ public class Apresentacao {
 		btnCompilar.addActionListener(e -> {
 			try {
 				textArea.setText(BarraFerramentas.compilar(editor));
-			} catch (BadLocationException ex) {
+			} catch (BadLocationException | IOException ex) {
 				throw new RuntimeException(ex);
 			}
 		});
@@ -215,7 +216,7 @@ public class Apresentacao {
         	public void actionPerformed(ActionEvent e) {
 				try {
 					textArea.setText(BarraFerramentas.compilar(editor));
-				} catch (BadLocationException ex) {
+				} catch (BadLocationException | IOException ex) {
 					throw new RuntimeException(ex);
 				}
 			}        	
