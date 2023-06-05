@@ -68,7 +68,7 @@ public class Semantico implements Constants {
 			doAcaoSemantica18();
 			break;
 		case 19:
-			// doAcaoSemantica19();
+		    doAcaoSemantica19();
 			break;
 		case 20:
 			doAcaoSemantica20(token);
