@@ -148,6 +148,11 @@ public class Semantico implements Constants {
 	}
 
 	public void doAcaoSemantica10() throws SemanticError {
+		pilhaTipos.pop();
+		pilhaTipos.pop();
+		
+		pilhaTipos.push(tipoBoolean);
+		
 		switch (operador) {
 
 		case "==":
@@ -214,7 +219,8 @@ public class Semantico implements Constants {
 	}
 
 	public void doAcaoSemantica17() {
-		codigo.append("\n");
+		codigo.append("ldstr " + "\"\\n\"\n");
+		codigo.append("call void [mscorlib]System.Console::Write(string)\n");
 	}
 
 	public void doAcaoSemantica18() {
