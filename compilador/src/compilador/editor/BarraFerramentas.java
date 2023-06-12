@@ -76,17 +76,17 @@ public class BarraFerramentas {
     public static void salvar(JTextArea editor, JTextArea textArea, JTextField tf) {
         if (tf.getText().equals("")) {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Save file");
+            fileChooser.setDialogTitle("Salvar arquivo");
             fileChooser.setFileFilter(new FileNameExtensionFilter("Arquivos de texto", "txt"));
             int userSelection = fileChooser.showSaveDialog(null);
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                File file = new File(filePath);
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     String text = editor.getText();
                     writer.write(text);
                     textArea.setText("");
-                    tf.setText(fileChooser.getSelectedFile().getParentFile().getName() +
-                            "\\" + fileChooser.getSelectedFile().getName());
+                    tf.setText(file.getParentFile().getName() + "\\" + file.getName());
                     caminho = fileChooser.getSelectedFile().getAbsolutePath();
                     JOptionPane.showMessageDialog(null, "Arquivo salvo em " + filePath);
                 } catch (IOException e) {
@@ -95,7 +95,15 @@ public class BarraFerramentas {
             }
         } else {
             String filePath = caminho;
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                file.delete();
+                
+               String caminhoIl = Paths.get(file.getAbsolutePath() + ".il").toString();
+               File il = new File(caminhoIl);
+               il.delete();
+            }
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 String text = editor.getText();
                 writer.write(text);
                 textArea.setText("");
@@ -104,9 +112,8 @@ public class BarraFerramentas {
                 e.printStackTrace();
             }
         }
-
     }
-
+    
     public static void colar(JTextArea editor) {
         // Obtém a área de transferência
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

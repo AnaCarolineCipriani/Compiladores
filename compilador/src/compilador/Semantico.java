@@ -134,7 +134,9 @@ public class Semantico implements Constants {
 
 	public void doAcaoSemantica6(Token token) {
 		pilhaTipos.push(tipoFloat);
-		codigo.append("ldc.r8\t" + token.getLexeme() + "\n");
+		String lexeme = token.getLexeme().replace(".", "");
+		lexeme = lexeme.replace(",", ".");
+		codigo.append("ldc.r8\t" + lexeme + "\n");
 	}
 
 	public void doAcaoSemantica8() {
