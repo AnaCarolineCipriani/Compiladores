@@ -1,6 +1,9 @@
 package compilador;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class Semantico implements Constants {
 
@@ -8,10 +11,13 @@ public class Semantico implements Constants {
 	private static final String tipoInt = "int64";
 	private static final String tipoBoolean = "bool";
 	private static final String tipoString = "string";
+	private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
 	private String operador = "";
 	private StringBuilder codigo = new StringBuilder();
 	private Stack<String> pilhaTipos = new Stack<String>();
+	private LinkedHashMap<String, String> tabela_simbolos = new LinkedHashMap<>();
+	private String listaId = "";
 
 	public void executeAction(int action, Token token) throws SemanticError {
 		System.out.println("Ação #" + action + ", Token: " + token);
@@ -73,6 +79,45 @@ public class Semantico implements Constants {
 		case 20:
 			doAcaoSemantica20(token);
 			break;
+		case 21:
+			doAcaoSemantica21();
+			break;
+		case 22:
+			doAcaoSemantica22(token);
+			break;
+		case 23:
+			doAcaoSemantica23(token);
+			break;
+		case 24:
+			doAcaoSemantica24(token);
+			break;
+		case 25:
+			doAcaoSemantica25();
+			break;
+		case 26:
+			doAcaoSemantica26();
+			break;
+		case 27:
+			doAcaoSemantica27();
+			break;
+		case 28:
+			doAcaoSemantica28();
+			break;
+		case 29:
+			doAcaoSemantica29();
+			break;
+		case 30:
+			doAcaoSemantica30();
+			break;
+		case 31:
+			doAcaoSemantica31();
+			break;
+		case 32:
+			doAcaoSemantica32();
+			break;
+		case 33:
+			doAcaoSemantica33();
+			break;
 		}
 	}
 
@@ -128,7 +173,8 @@ public class Semantico implements Constants {
 	public void doAcaoSemantica5(Token token) {
 		pilhaTipos.push(tipoInt);
 		codigo.append("ldc.i8\t");
-		codigo.append(token.getLexeme() + "\n");
+		String lexeme = token.getLexeme().replace(".", "");
+		codigo.append(lexeme + "\n");
 		codigo.append("conv.r8" + "\n");
 	}
 
@@ -230,7 +276,7 @@ public class Semantico implements Constants {
 		String tipo2 = pilhaTipos.pop();
 		if (tipo1.equals(tipoBoolean) && tipo2.equals(tipoBoolean)) {
 			pilhaTipos.push(tipoBoolean);
-			codigo.append("and");
+			codigo.append("and ");
 		}
 	}
 
@@ -239,7 +285,7 @@ public class Semantico implements Constants {
 		String tipo2 = pilhaTipos.pop();
 		if (tipo1.equals(tipoBoolean) && tipo2.equals(tipoBoolean)) {
 			pilhaTipos.push(tipoBoolean);
-			codigo.append("or");
+			codigo.append("or ");
 		}
 	}
 
@@ -247,10 +293,140 @@ public class Semantico implements Constants {
 		pilhaTipos.push(tipoString);
 		codigo.append("ldstr\t" + token.getLexeme() + "\n");
 	}
+	
+	public void doAcaoSemantica21() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	
+	public void doAcaoSemantica22(Token token) {
+		addListaId(token.getLexeme());
+	}
+	
+	public void doAcaoSemantica23(Token token) {
+		String[] identificadores = getIdentificadores();
+		
+		boolean encontrou = false;
+		try { 
+			String lexeme = token.getLexeme();
+			for (String identificador : identificadores) {
+				if (lexeme.equals(identificador)) {
+					encontrou = true;
+					break;
+				}
+			}
+			if (!encontrou) {
+				// TODO - tratar mensagem de erro 
+			}
+			
+			String tipo = tipoString;
+			codigo.append("(ldloc " +  lexeme + ")" + "\n");
+			if (isNumero(lexeme)) {
+				tipo = tipoInt;
+				if (lexeme.contains(",")) {
+					tipo = tipoFloat;
+				} 
+			}
+			
+			if (tipo.equals(tipoInt)) {
+				codigo.append("conv.r8\n");
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+	}
+
+	private String[] getIdentificadores() {
+		String[] identificadores = getListaId().split(" ");
+		return identificadores;
+	}
+	
+	public void doAcaoSemantica24(Token token) {
+		String tipo1 = pilhaTipos.pop();
+		
+		String[] identificadores = getIdentificadores();
+		int n = identificadores.length -1 ;
+		
+		for (int i = 0; i <= n; i++) {
+			codigo.append("dup");
+		}
+		
+		for (String string : identificadores) {
+			String id = tabela_simbolos.get(token.getLexeme());
+			if (id == null) {
+				tabela_simbolos.put(string, tipo1);
+				codigo.append(".locals " + string);
+			}
+		}
+		
+		
+	}
+	public void doAcaoSemantica25() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	public void doAcaoSemantica26() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	public void doAcaoSemantica27() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	public void doAcaoSemantica28() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	
+	public void doAcaoSemantica29() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	
+	public void doAcaoSemantica30() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	
+	public void doAcaoSemantica31() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	
+	public void doAcaoSemantica32() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
+	
+	public void doAcaoSemantica33() {
+		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
+				+ " string _temp_str, bool _temp_bool)");
+	}
 
 	public String getCodigo() {
 		String cod = this.codigo.toString();
 		return cod;
 	}
-
+	
+	public String getListaId() {
+		return listaId;
+	}
+	
+	public void addListaId(String listaId) {
+		this.listaId += listaId + " ";
+	}
+	
+	public void clearIdentificadores() {
+		this.listaId = "";
+	}
+	
+	public boolean isNumero(String strNum) {
+	    if (strNum == null) {
+	        return false; 
+	    }
+	    return pattern.matcher(strNum).matches();
+	}
+	
 }

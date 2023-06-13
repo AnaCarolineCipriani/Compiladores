@@ -94,14 +94,14 @@ pr_if = identificador: "if"
 <programa>
 
 #Grammar
-<programa> ::= #15 <lista_comandos> #16;
+<programa> ::= #15 #21 <lista_comandos> #16;
 
 <atribuicao> ::= <lista_id> "=" <expressao> <atribuicao1>;
 
-<atribuicao1> ::= ":" pr_if <expressao> | î;
+<atribuicao1> ::= #25 ":" pr_if <expressao> #26 | #24 î;
 
 
-<entrada_dados> ::= pr_read "(" <lista_id> ")";
+<entrada_dados> ::= pr_read "(" <lista_id> #27 ")";
 
 
 <saida_dados> ::= pr_write "(" <lista_expressao> ")" | pr_writeln "(" <lista_expressao> ")" #17 ;
@@ -112,12 +112,12 @@ pr_if = identificador: "if"
 <lista_expressao1> ::= ","<lista_expressao> | î;
 
 
-<selecao> ::= pr_if "(" <expressao> ")" <lista_comandos> <selecao1> pr_end;
+<selecao> ::= pr_if "(" <expressao> ")" #28 <lista_comandos> <selecao1> pr_end #29;
 
-<selecao1> ::= pr_else <lista_comandos> | î;
+<selecao1> ::= #30 pr_else <lista_comandos> | î;
 
 
-<repeticao> ::= pr_check "(" <expressao> ")" ":" pr_if <repeticao1> <lista_comandos> pr_end;
+<repeticao> ::= pr_check #31 "(" <expressao> ")" ":" pr_if <repeticao1> #32 <lista_comandos> pr_end #33 ;
 
 <repeticao1> ::= pr_true | pr_false;
 
@@ -130,7 +130,7 @@ pr_if = identificador: "if"
 <lista_comandos1> ::= <lista_comandos> | î;
 
 
-<lista_id> ::= identificador <lista_id1>;
+<lista_id> ::= identificador #22 <lista_id1>;
 
 <lista_id1> ::= ","<lista_id> | î;
 
@@ -148,7 +148,7 @@ pr_if = identificador: "if"
 <termo>			::= <fator> <termo_> ;
 <termo_>			::= î | "*" <fator> #3 <termo_> | "/" <fator> #4 <termo_> ;
 
-<fator>			::= identificador | 
+<fator>			::= identificador #23 | 
 			    	    constante_int #5 | 
 		   	    	    constante_float #6 | 
 			    	    constante_binaria |
