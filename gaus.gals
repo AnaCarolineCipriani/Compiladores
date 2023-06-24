@@ -65,6 +65,7 @@ pr_if = identificador: "if"
 
  
 #NonTerminals
+<programa>
 <lista_comandos>
 <lista_comandos1>
 <lista_expressao>
@@ -91,8 +92,6 @@ pr_if = identificador: "if"
 <termo>
 <termo_>
 <fator>
-<programa>
-
 #Grammar
 <programa> ::= #15 #21 <lista_comandos> #16;
 
