@@ -1,9 +1,8 @@
 package compilador;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.Stack;
-import java.util.regex.Pattern;
 
 public class Semantico implements Constants {
 
@@ -11,14 +10,15 @@ public class Semantico implements Constants {
 	private static final String tipoInt = "int64";
 	private static final String tipoBoolean = "bool";
 	private static final String tipoString = "string";
-	private Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
-
+	
+	private int rotulo = 0;
 	private String operador = "";
+	private String listaId = "";
 	private StringBuilder codigo = new StringBuilder();
 	private Stack<String> pilhaTipos = new Stack<String>();
-	private LinkedHashMap<String, String> tabela_simbolos = new LinkedHashMap<>();
-	private String listaId = "";
-
+	private Stack<String> pilha_rotulos = new Stack<String>();
+	private LinkedHashMap<String, String> tabelaSimbolos = new LinkedHashMap<String, String>();
+		
 	public void executeAction(int action, Token token) throws SemanticError {
 		System.out.println("Ação #" + action + ", Token: " + token);
 		switch (action) {
@@ -198,9 +198,9 @@ public class Semantico implements Constants {
 	public void doAcaoSemantica10() throws SemanticError {
 		pilhaTipos.pop();
 		pilhaTipos.pop();
-		
+
 		pilhaTipos.push(tipoBoolean);
-		
+
 		switch (operador) {
 
 		case "==":
@@ -228,7 +228,7 @@ public class Semantico implements Constants {
 			codigo.append("ceq\n");
 			break;
 		default:
-			throw new SemanticError(null);
+			break;
 		}
 	}
 
@@ -303,39 +303,25 @@ public class Semantico implements Constants {
 		addListaId(token.getLexeme());
 	}
 	
-	public void doAcaoSemantica23(Token token) {
-		String[] identificadores = getIdentificadores();
-		
+	public void doAcaoSemantica23(Token token) throws SemanticError {
 		boolean encontrou = false;
-		try { 
-			String lexeme = token.getLexeme();
-			for (String identificador : identificadores) {
-				if (lexeme.equals(identificador)) {
-					encontrou = true;
-					break;
+
+		String lexeme = token.getLexeme();
+		for (String identificador : tabelaSimbolos.keySet()) {
+			if (lexeme.equals(identificador)) {
+				encontrou = true;
+				String tipoIdentificador = tabelaSimbolos.get(identificador);
+				if (tipoIdentificador != null && tipoIdentificador.equals(tipoInt)) {
+					codigo.append("conv.r8\n");
 				}
+				break;
 			}
-			if (!encontrou) {
-				// TODO - tratar mensagem de erro 
-			}
-			
-			String tipo = tipoString;
-			codigo.append("(ldloc " +  lexeme + ")" + "\n");
-			if (isNumero(lexeme)) {
-				tipo = tipoInt;
-				if (lexeme.contains(",")) {
-					tipo = tipoFloat;
-				} 
-			}
-			
-			if (tipo.equals(tipoInt)) {
-				codigo.append("conv.r8\n");
-			}
-			
-		} catch (Exception e) {
-			throw e;
 		}
-		
+		if (!encontrou) {
+			throw new SemanticError("identificador " + token.getLexeme() + " não declarado");
+		}
+
+		codigo.append("ldloc " + token.getLexeme());
 	}
 
 	private String[] getIdentificadores() {
@@ -354,55 +340,153 @@ public class Semantico implements Constants {
 		}
 		
 		for (String string : identificadores) {
-			String id = tabela_simbolos.get(token.getLexeme());
+			String id = tabelaSimbolos.get(token.getLexeme());
 			if (id == null) {
-				tabela_simbolos.put(string, tipo1);
+				tabelaSimbolos.put(string, tipo1);
 				codigo.append(".locals " + string);
 			}
 		}
-		
-		
-	}
-	public void doAcaoSemantica25() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
-	}
-	public void doAcaoSemantica26() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
-	}
-	public void doAcaoSemantica27() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
-	}
-	public void doAcaoSemantica28() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
 	}
 	
-	public void doAcaoSemantica29() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
+	public void doAcaoSemantica25() {
+		String tipoExpressao = pilhaTipos.pop();
+		String temp = "";
+		
+		switch (tipoExpressao) {
+		case tipoInt:
+			codigo.append("conv.i8\n");
+			temp = "_temp_int\n";
+			break;
+		case tipoFloat:
+			temp = "_temp_float\n";
+			break;
+		case tipoString:
+			temp = "_temp_str\n";
+			break;
+		case tipoBoolean:
+			temp = "_temp_bool\n";
+			break;
+		default:
+			break;
+		}
+		
+		addListaId(temp);
+		codigo.append("stloc " + temp);
+		
+	}
+	
+	public void doAcaoSemantica26() throws SemanticError {
+		codigo.append("brfalse " + rotulo++);
+		
+		String[] identificadores = getIdentificadores();
+		int posicao = identificadores.length -1;
+		identificadores = new String[posicao];
+		String tipoTemp = pilhaTipos.peek();
+		
+		codigo.append("ldloc" );
+		
+		for (int i = 0; i <= posicao; i++) {
+			codigo.append("dup");
+		}
+		
+		for (String identificador : identificadores) {
+
+			if (!tabelaSimbolos.containsKey(identificador)) {
+				codigo.append(".locals (" + tipoTemp + " " + identificador + ")");
+				tabelaSimbolos.put(identificador, tipoTemp);
+			} else {
+				String tipoId = tabelaSimbolos.get(identificador);
+				
+				if (!Objects.equals(tipoTemp, tipoId)) {
+					throw new SemanticError("Tipos incompatíveis em comando de atribuição");
+				}
+				codigo.append("stloc " + identificador);
+			}
+		}
+		clearIdentificadores();
+		pilha_rotulos.push("r" + rotulo);
+	}
+	
+	public void doAcaoSemantica27() throws SemanticError {
+		String[] identificadores = getIdentificadores();
+
+		for (String identificador : identificadores) {
+			String id = tabelaSimbolos.get(identificador);
+
+			if (id == null) {
+				throw new SemanticError("identificador " + identificador + " não declarado.");
+			}
+
+			String tipoIdentificador = tabelaSimbolos.get(identificador);
+			String classe = null;
+
+			switch (tipoIdentificador) {
+			case tipoBoolean:
+				classe = "Boolean";
+				break;
+			case tipoFloat:
+				classe = "Double";
+				break;
+			case tipoInt:
+				classe = "Int64";
+				break;
+			}
+
+			codigo.append("call string [mscorlib]System.Console::ReadLine()\n");
+			if (!Objects.equals(tipoString, tipoIdentificador)) {
+				codigo.append("call " + tipoIdentificador + " [mscorlib]System.");
+				codigo.append(classe + "::Parse(string)\n");
+			}
+
+			codigo.append("stloc " + identificador + "\n");
+
+		}
+		clearIdentificadores();
+	}
+	
+	public void doAcaoSemantica28() { // após <expressao>
+		pilhaTipos.pop();
+		rotulo++;
+		
+		codigo.append("brfalse r"+rotulo+" \n");
+		pilha_rotulos.push("r"+rotulo);
+	}
+	
+	public void doAcaoSemantica29() {// após o end
+		rotulo++;
+		codigo.append("br r"+rotulo+" \n");
+		String rotulo1 = pilha_rotulos.pop();
+		codigo.append("r"+(rotulo1));
+		pilha_rotulos.push("r"+rotulo);
 	}
 	
 	public void doAcaoSemantica30() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
+		codigo.append(pilha_rotulos.pop());
 	}
 	
-	public void doAcaoSemantica31() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
+	public void doAcaoSemantica31() { 
+		pilhaTipos.pop();
+		rotulo++;
+		codigo.append("r"+rotulo+" \n");
+		pilha_rotulos.push("r"+rotulo);
 	}
 	
 	public void doAcaoSemantica32() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
+		rotulo++;
+		if(pilhaTipos.peek().equals("false")) {
+			codigo.append("brfalse r"+rotulo+" \n");
+		}else {
+			codigo.append("brtrue r"+"rotulo"+" \n");
+		}
+		pilha_rotulos.push("r"+rotulo);
 	}
 	
 	public void doAcaoSemantica33() {
-		codigo.append(".locals(int64 _temp_int, float64 _temp_float,\r\n"
-				+ " string _temp_str, bool _temp_bool)");
+		String rotulo2 = pilha_rotulos.pop();
+		String rotulo1 = pilha_rotulos.pop();
+		
+		codigo.append("br "+rotulo1+" \n");
+		codigo.append(rotulo2);
 	}
 
 	public String getCodigo() {
@@ -420,13 +504,6 @@ public class Semantico implements Constants {
 	
 	public void clearIdentificadores() {
 		this.listaId = "";
-	}
-	
-	public boolean isNumero(String strNum) {
-	    if (strNum == null) {
-	        return false; 
-	    }
-	    return pattern.matcher(strNum).matches();
 	}
 	
 }
