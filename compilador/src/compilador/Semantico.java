@@ -20,7 +20,7 @@ public class Semantico implements Constants {
 	private LinkedHashMap<String, String> tabelaSimbolos = new LinkedHashMap<String, String>();
 		
 	public void executeAction(int action, Token token) throws SemanticError {
-		System.out.println("AÃ§Ã£o #" + action + ", Token: " + token);
+		System.out.println("Ação #" + action + ", Token: " + token);
 		switch (action) {
 		case 1:
 			doAcaoSemantica1();
@@ -320,7 +320,7 @@ public class Semantico implements Constants {
 			}
 		}
 		if (!encontrou) {
-			throw new SemanticError("identificador " + token.getLexeme() + " nÃ£o declarado");
+			throw new SemanticError("identificador " + token.getLexeme() + " não declarado");
 		}
 
 		
@@ -412,7 +412,7 @@ public class Semantico implements Constants {
 				String tipoId = tabelaSimbolos.get(identificador);
 				
 				if (!Objects.equals(tipoTemp, tipoId)) {
-					throw new SemanticError("Tipos incompatÃ­veis em comando de atribuiÃ§Ã£o");
+					throw new SemanticError("Tipos incompatíveis em comando de atribuição");
 				}
 				codigo.append("stloc " + identificador + " ");
 			}
@@ -428,7 +428,7 @@ public class Semantico implements Constants {
 			String id = tabelaSimbolos.get(identificador);
 
 			if (id == null) {
-				throw new SemanticError("identificador " + identificador + " nÃ£o declarado.");
+				throw new SemanticError("identificador " + identificador + " não declarado.");
 			}
 
 			String tipoIdentificador = tabelaSimbolos.get(identificador);
@@ -458,7 +458,7 @@ public class Semantico implements Constants {
 		clearIdentificadores();
 	}
 	
-	public void doAcaoSemantica28() { // apÃ³s <expressao>
+	public void doAcaoSemantica28() {
 		pilhaTipos.pop();
 		rotulo++;
 		
@@ -466,7 +466,7 @@ public class Semantico implements Constants {
 		pilha_rotulos.push("r"+rotulo);
 	}
 	
-	public void doAcaoSemantica29() {// apÃ³s o end
+	public void doAcaoSemantica29() {
 		codigo.append(pilha_rotulos.pop()+ ": ");
 	}
 	

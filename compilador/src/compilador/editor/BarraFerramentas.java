@@ -192,7 +192,7 @@ public class BarraFerramentas {
 			//mensagem - s�mbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
 		}
         catch (SemanticError e) {
-            //TODO
+            return e.getMessage();
         }
         salvaCodigoGerado(semantico);
 
@@ -209,6 +209,14 @@ public class BarraFerramentas {
         
         String ondeSalvar = caminhoAtual + "\\" + nomeArq + ".il";
         File file = new File(ondeSalvar);
+        if (file.exists()) {
+            file.delete();
+            
+           String caminhoIl = Paths.get(file.getAbsolutePath() + ".il").toString();
+           File il = new File(caminhoIl);
+           il.delete();
+        }
+        
         file.createNewFile();
         Files.write(Paths.get(ondeSalvar), semantico.getCodigo().getBytes(), StandardOpenOption.APPEND);
 	}
